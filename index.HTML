@@ -1,0 +1,584 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Para Julia</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Cormorant+SC:wght@500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --wine: #241017;
+    --wine-deep: #180a0f;
+    --rose: #d9a894;
+    --rose-soft: #e8c9ba;
+    --gold: #c79a6b;
+    --ivory: #f3e9e1;
+    --ivory-dim: #c9b7ae;
+    --line: rgba(215, 180, 165, 0.18);
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); height: 100%; }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--wine-deep);
+    color: var(--ivory);
+    font-family: 'Cormorant Garamond', 'Iowan Old Style', Georgia, serif;
+    line-height: 1.7;
+    font-size: 1.08rem;
+  }
+
+  /* ---------- HERO ---------- */
+  .hero {
+    position: relative;
+    min-height: 88vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: 5rem 1.5rem 4rem;
+    overflow: hidden;
+    background: var(--wine);
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 45% at 50% 18%, rgba(217,168,148,0.22), transparent 65%),
+      radial-gradient(ellipse 80% 60% at 50% 100%, rgba(24,10,15,0.9), transparent 60%);
+    pointer-events: none;
+  }
+  .flourish {
+    position: relative;
+    width: 46px;
+    height: 46px;
+    margin-bottom: 1.6rem;
+    opacity: 0.9;
+  }
+  .eyebrow {
+    position: relative;
+    font-family: 'Cormorant SC', 'Cormorant Garamond', serif;
+    font-size: 0.92rem;
+    letter-spacing: 0.32em;
+    color: var(--gold);
+    margin-bottom: 1.4rem;
+    text-transform: uppercase;
+  }
+  h1.title {
+    position: relative;
+    font-size: clamp(2.3rem, 7vw, 3.8rem);
+    font-weight: 500;
+    font-style: italic;
+    margin: 0 0 1.1rem;
+    max-width: 16ch;
+    color: var(--ivory);
+    text-wrap: balance;
+  }
+  .subtitle {
+    position: relative;
+    color: var(--rose-soft);
+    font-size: 1.15rem;
+    font-style: italic;
+    max-width: 34ch;
+    margin: 0 auto;
+  }
+
+  .counter-sentence {
+    position: relative;
+    margin-top: 3.2rem;
+    max-width: 30ch;
+    font-size: clamp(1.15rem, 3.2vw, 1.4rem);
+    color: var(--ivory-dim);
+  }
+  .counter-sentence .num {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 600;
+    font-style: normal;
+    color: var(--rose);
+    font-size: 1.15em;
+  }
+  .counter-note {
+    position: relative;
+    margin-top: 1.4rem;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    color: var(--ivory-dim);
+    opacity: 0.6;
+  }
+
+  .scroll-hint {
+    position: relative;
+    margin-top: 3rem;
+    width: 1px;
+    height: 46px;
+    background: linear-gradient(var(--gold), transparent);
+    opacity: 0.6;
+  }
+
+  /* ---------- SECTIONS ---------- */
+  section {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 5rem 1.6rem;
+  }
+  .section-head {
+    text-align: center;
+    margin-bottom: 3.4rem;
+  }
+  .section-head .kicker {
+    display: block;
+    font-family: 'Cormorant SC', serif;
+    font-size: 0.78rem;
+    letter-spacing: 0.28em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 0.7rem;
+  }
+  .section-head h2 {
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(1.6rem, 4.4vw, 2.2rem);
+    margin: 0;
+    color: var(--ivory);
+  }
+
+  /* ---------- MOMENTS ---------- */
+  .moment {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 1.8rem;
+    padding: 3rem 0;
+    position: relative;
+  }
+  .moment + .moment {
+    border-top: 1px solid var(--line);
+  }
+  @media (min-width: 680px) {
+    .moment {
+      grid-template-columns: 200px 1fr;
+      align-items: start;
+      gap: 2.6rem;
+    }
+    .moment:nth-child(even) {
+      grid-template-columns: 1fr 200px;
+    }
+    .moment:nth-child(even) .moment-frame { order: 2; }
+  }
+  .moment-frame {
+    position: relative;
+    padding: 10px 10px 26px;
+    background: linear-gradient(160deg, #2c1720, #1c0d12);
+    border: 1px solid var(--line);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.35);
+    transform: rotate(-1.4deg);
+  }
+  .moment:nth-child(even) .moment-frame { transform: rotate(1.4deg); }
+  .moment-photo {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+    filter: sepia(22%) saturate(78%) brightness(0.92) contrast(1.02);
+  }
+  .moment-date {
+    font-family: 'Cormorant SC', serif;
+    font-size: 0.8rem;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    margin-bottom: 0.6rem;
+    text-transform: uppercase;
+  }
+  .moment-text {
+    color: var(--ivory);
+    font-size: 1.12rem;
+  }
+  .moment-text.placeholder {
+    color: var(--ivory-dim);
+    font-style: italic;
+  }
+
+  /* ---------- GALLERY / LETTER PLACEHOLDERS ---------- */
+  .gallery-placeholder, .letter-placeholder {
+    border: 1px dashed var(--line);
+    border-radius: 2px;
+    padding: 3rem 1.8rem;
+    text-align: center;
+    color: var(--ivory-dim);
+    font-size: 1rem;
+    font-style: italic;
+    background: rgba(255,255,255,0.02);
+  }
+  .letter-placeholder {
+    text-align: left;
+    border: none;
+    border-left: 2px solid var(--gold);
+    padding: 0.3rem 0 0.3rem 1.8rem;
+    background: none;
+  }
+
+  footer {
+    text-align: center;
+    padding: 4rem 1.5rem 5rem;
+    color: var(--ivory-dim);
+    font-size: 0.95rem;
+    font-style: italic;
+    opacity: 0.75;
+  }
+
+
+  /* ---------- PHOTO GALLERY ---------- */
+  .photo-gallery {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1rem;
+  }
+  .gallery-item {
+    margin: 0;
+    padding: 7px 7px 18px;
+    background: linear-gradient(160deg, #2c1720, #1c0d12);
+    border: 1px solid var(--line);
+    box-shadow: 0 10px 24px rgba(0,0,0,0.28);
+    transform: rotate(-0.8deg);
+    cursor: zoom-in;
+  }
+  .gallery-item:nth-child(3n) { transform: rotate(0.8deg); }
+  .gallery-item:nth-child(4n) { transform: rotate(-0.3deg); }
+  .gallery-item img {
+    width: 100%;
+    aspect-ratio: 4 / 5;
+    object-fit: cover;
+    display: block;
+    filter: sepia(12%) saturate(88%) brightness(0.96) contrast(1.01);
+  }
+  .gallery-item figcaption {
+    margin-top: 0.45rem;
+    text-align: center;
+    color: var(--ivory-dim);
+    font-size: 0.82rem;
+    font-style: italic;
+  }
+  .lightbox {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 1.5rem;
+    background: rgba(10, 4, 7, 0.94);
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img {
+    max-width: min(94vw, 900px);
+    max-height: 90vh;
+    object-fit: contain;
+    box-shadow: 0 18px 60px rgba(0,0,0,0.55);
+  }
+  .lightbox-close {
+    position: fixed;
+    top: 1rem;
+    right: 1.2rem;
+    border: 0;
+    background: none;
+    color: var(--ivory);
+    font-size: 2rem;
+    line-height: 1;
+    cursor: pointer;
+  }
+  @media (max-width: 520px) {
+    .photo-gallery { grid-template-columns: 1fr; }
+  }
+
+  /* ---------- REVEAL ---------- */
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.9s ease, transform 0.9s ease;
+  }
+  .reveal.in {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .reveal { opacity: 1; transform: none; transition: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <svg class="flourish" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M23 6 C 15 6, 6 12, 6 23 C 6 34, 15 40, 23 40 C 31 40, 40 34, 40 23 C 40 12, 31 6, 23 6 Z" stroke="#c79a6b" stroke-width="0.6" opacity="0.5"/>
+    <path d="M23 14 L23 32 M14 23 L32 23" stroke="#c79a6b" stroke-width="0.6" opacity="0.7"/>
+  </svg>
+  <div class="eyebrow">Para Julia</div>
+  <h1 class="title">Todo lo que empezó un 18 de diciembre</h1>
+  <p class="subtitle">Desde antes de conocernos, hasta hoy.</p>
+
+  <p class="counter-sentence">
+    Hace <span class="num" id="years">0</span> años, <span class="num" id="months">0</span> meses y <span class="num" id="days">0</span> días que no paro de agradecer haberte escrito esa noche.
+  </p>
+  <div class="counter-note">contando desde el 18 de diciembre de 2022</div>
+  <div class="scroll-hint"></div>
+</div>
+
+<section>
+  <div class="section-head reveal">
+    <span class="kicker">Cómo llegamos hasta acá</span>
+    <h2>Tres noches, antes de que fueran nuestras</h2>
+  </div>
+
+  <div class="moment reveal">
+    <div class="moment-frame">
+      <img class="moment-photo" src="fotos/0.jpeg">
+    </div>
+    <div>
+      <div class="moment-date">24 de mayo, 2022</div>
+      <div class="moment-text">Estaba de viaje con mi familia, todavía me acuerdo a mi viejo en la ruta, manejando, preguntándome: "¿Con quién hablás tanto a esta hora?" Era de madrugada. Vos estabas yendo a una fiestita y nosotros meta charla, mientras yo me aburría de tanta noche oscura en la ruta.</div>
+    </div>
+  </div>
+
+  <div class="moment reveal">
+    <div class="moment-frame">
+      <img class="moment-photo" src="fotos/00.jpeg">
+    </div>
+    <div>
+      <div class="moment-date">11 de noviembre, 2022</div>
+      <div class="moment-text">Fuimos a comer al depto de Seba Traductor, en Tucumán y Dorrego. Me preguntaron qué hacía después y no quería decirles ni dónde ni con quién iba. Les deslicé, nomás: "No sé si vuelvo a mi casa esta noche."</div>
+    </div>
+  </div>
+
+  <div class="moment reveal">
+    <div class="moment-frame">
+      <img class="moment-photo" src="fotos/000.jpeg">
+    </div>
+    <div>
+      <div class="moment-date">18 de diciembre, 2022</div>
+      <div class="moment-text">Qué día. Fue la vez que más agradecí ser inconsciente y animarme a vernos, pese a que no teníamos mucha confianza y mi estado era deplorable. De ahí en adelante, ya sabés cómo sigue.</div>
+    </div>
+  </div>
+</section>
+
+<<section>
+  <div class="section-head reveal">
+    <span class="kicker">Y después de esa noche</span>
+    <h2>Todo lo que vino</h2>
+  </div>
+
+  <div class="photo-gallery" id="photoGallery"></div>
+</section>
+
+
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" aria-label="Cerrar">×</button>
+  <img id="lightbox-img" src="" alt="">
+</div>
+
+<footer>hecha con todo, para vos</footer>
+
+<script>
+  const start = new Date(2022, 11, 18);
+  function updateCounter() {
+    const now = new Date();
+    let years = now.getFullYear() - start.getFullYear();
+    let months = now.getMonth() - start.getMonth();
+    let days = now.getDate() - start.getDate();
+    if (days < 0) {
+      months -= 1;
+      const prevMonth = new Date(now.getFullYear(), now.getMonth(), 0);
+      days += prevMonth.getDate();
+    }
+    if (months < 0) {
+      years -= 1;
+      months += 12;
+    }
+    document.getElementById('years').textContent = years;
+    document.getElementById('months').textContent = months;
+    document.getElementById('days').textContent = days;
+  }
+  updateCounter();
+
+  try {
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  } catch (e) {
+    document.querySelectorAll('.reveal').forEach(el => el.classList.add('in'));
+  }
+</script>
+<script>
+  /* ==========================================
+     GALERÍA
+     ========================================== */
+
+  const gallery = document.getElementById("photoGallery");
+
+  const galleryImages = [];
+
+  for (let i = 1; i <= 40; i++) {
+
+    const figure = document.createElement("figure");
+    figure.className = "gallery-item";
+
+    const img = document.createElement("img");
+
+    img.src = `fotos/${i}.jpeg`;
+    img.alt = "";
+    img.loading = "lazy";
+
+    figure.appendChild(img);
+    gallery.appendChild(figure);
+
+    galleryImages.push(img);
+
+    img.addEventListener("click", function() {
+      openLightbox(i - 1);
+    });
+  }
+
+
+  /* ==========================================
+     LIGHTBOX
+     ========================================== */
+
+  let currentPhoto = 0;
+
+  function openLightbox(index) {
+
+    currentPhoto = index;
+
+    const box = document.getElementById("lightbox");
+    const img = document.getElementById("lightbox-img");
+
+    img.src = galleryImages[currentPhoto].src;
+
+    box.classList.add("open");
+
+    document.body.style.overflow = "hidden";
+  }
+
+
+  function closeLightbox(event) {
+
+    if (
+      !event ||
+      event.target.id === "lightbox" ||
+      event.target.classList.contains("lightbox-close")
+    ) {
+
+      document.getElementById("lightbox").classList.remove("open");
+
+      document.body.style.overflow = "";
+    }
+  }
+
+
+  /* ==========================================
+     FOTO ANTERIOR
+     ========================================== */
+
+  function previousPhoto() {
+
+    currentPhoto--;
+
+    if (currentPhoto < 0) {
+      currentPhoto = galleryImages.length - 1;
+    }
+
+    document.getElementById("lightbox-img").src =
+      galleryImages[currentPhoto].src;
+  }
+
+
+  /* ==========================================
+     FOTO SIGUIENTE
+     ========================================== */
+
+  function nextPhoto() {
+
+    currentPhoto++;
+
+    if (currentPhoto >= galleryImages.length) {
+      currentPhoto = 0;
+    }
+
+    document.getElementById("lightbox-img").src =
+      galleryImages[currentPhoto].src;
+  }
+
+
+  /* ==========================================
+     TECLADO
+     ========================================== */
+
+  document.addEventListener("keydown", function(e) {
+
+    const box = document.getElementById("lightbox");
+
+    /* Si el lightbox no está abierto, no hacemos nada */
+    if (!box.classList.contains("open")) {
+      return;
+    }
+
+
+    /* Flecha derecha → siguiente */
+
+    if (e.key === "ArrowRight") {
+
+      e.preventDefault();
+
+      nextPhoto();
+    }
+
+
+    /* Flecha izquierda → anterior */
+
+    if (e.key === "ArrowLeft") {
+
+      e.preventDefault();
+
+      previousPhoto();
+    }
+
+
+    /* ESC → cerrar */
+
+    if (e.key === "Escape") {
+
+      e.preventDefault();
+
+      box.classList.remove("open");
+
+      document.body.style.overflow = "";
+    }
+
+  });
+
+</script>
+</body>
+
+<!--
+CONTEXTO PARA CONTINUAR EN OTRO CHAT:
+Este es el draft autocontenido de la página de cumpleaños "Para Julia".
+Nombre: Julia.
+Fecha de inicio del contador: 18 de diciembre de 2022.
+Estructura: 3 momentos puntuales + galería general + carta.
+Las 3 fotos de los momentos ya estaban embebidas en este HTML.
+En esta versión se agregaron 8 fotos nuevas a la galería general.
+PENDIENTE: agregar más fotos si se desea, completar la carta y hacer la revisión final del diseño.
+No reemplazar ni borrar las 3 fotos/momentos existentes sin indicación expresa.
+La prioridad es conservar el estilo editorial oscuro, dorado y serif ya aplicado.
+-->
+
+</html>
